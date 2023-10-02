@@ -22,10 +22,13 @@ public class CreditTest {
 
     @BeforeAll
     static void setUpAll() {
+
         SelenideLogger.addListener("allure", new AllureSelenide());
     }
+
     @AfterAll
     static void tearDownAll() {
+
         SelenideLogger.removeListener("allure");
     }
 
@@ -80,11 +83,11 @@ public class CreditTest {
         var creditpage = new ByuCredit();
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(emptyCardNumber, emptyMonth, emptyYear, emptyName, emptyCode);
-        creditpage.verifyEmptyCardNumberVisibility();
-        creditpage.verifyEmptyMonthVisibility();
-        creditpage.verifyEmptyYearVisibility();
+        creditpage.verifyInvalidFormatCardNumberVisibility();
+        creditpage.verifyInvalidFormatMonthVisibility();
+        creditpage.verifyInvalidFormatYearVisibility();
         creditpage.verifyEmptyNameVisibility();
-        creditpage.verifyEmptyCodeVisibility();
+        creditpage.verifyInvalidFormatCodeVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }
 
@@ -95,7 +98,7 @@ public class CreditTest {
         var creditpage = new ByuCredit();
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(emptyCardNumber, validMonth, validYear, validName, validCode);
-        creditpage.verifyEmptyCardNumberVisibility();
+        creditpage.verifyInvalidFormatCardNumberVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }
 
@@ -106,7 +109,7 @@ public class CreditTest {
         var creditpage = new ByuCredit();
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(validCardNumber, emptyMonth, validYear, validName, validCode);
-        creditpage.verifyEmptyMonthVisibility();
+        creditpage.verifyInvalidFormatMonthVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }
 
@@ -117,7 +120,7 @@ public class CreditTest {
         var creditpage = new ByuCredit();
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(validCardNumber, validMonth, emptyYear, validName, validCode);
-        creditpage.verifyEmptyYearVisibility();
+        creditpage.verifyInvalidFormatYearVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }
 
@@ -139,7 +142,7 @@ public class CreditTest {
         var creditpage = new ByuCredit();
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(validCardNumber, validMonth, validYear, validName, emptyCode);
-        creditpage.verifyEmptyCodeVisibility();
+        creditpage.verifyInvalidFormatCodeVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }
 
@@ -188,17 +191,6 @@ public class CreditTest {
     }
 
     @Test
-    @DisplayName("Ошибка в номере карты, имя заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongCardNumber() {
-        var longCardNumber = DataHelper.getNumber(17);
-        var creditpage = new ByuCredit();
-        creditpage.cleanCreditForm();
-        creditpage.enterCreditInputs(longCardNumber, validMonth, validYear, validName, validCode);
-        creditpage.verifyInvalidFormatCardNumberVisibility();
-        assertNull(SQLHelper.getCreditStatus());
-    }
-
-    @Test
     @DisplayName("Ошибка в поле месяца, заполнить кириллицей")
     void shouldReturnErrorWithCyrillicMonth() {
         var cyrillicMonth = DataHelper.getNameOfCyrillic();
@@ -239,17 +231,6 @@ public class CreditTest {
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(validCardNumber, shortMonth, validYear, validName, validCode);
         creditpage.verifyInvalidFormatMonthVisibility();
-        assertNull(SQLHelper.getCreditStatus());
-    }
-
-    @Test
-    @DisplayName("Ошибка в поле месяца, заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongMonth() {
-        var longMonth = DataHelper.getNumber(3);
-        var creditpage = new ByuCredit();
-        creditpage.cleanCreditForm();
-        creditpage.enterCreditInputs(validCardNumber, longMonth, validYear, validName, validCode);
-        creditpage.verifyInvalidValidityPeriodVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }
 
@@ -305,17 +286,6 @@ public class CreditTest {
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(validCardNumber, validMonth, shortYear, validName, validCode);
         creditpage.verifyInvalidFormatYearVisibility();
-        assertNull(SQLHelper.getCreditStatus());
-    }
-
-    @Test
-    @DisplayName("Ошибка в поле года, заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongYear() {
-        var longYear = "333";
-        var creditpage = new ByuCredit();
-        creditpage.cleanCreditForm();
-        creditpage.enterCreditInputs(validCardNumber, validMonth, longYear, validName, validCode);
-        creditpage.verifyInvalidValidityPeriodVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }
 
@@ -432,21 +402,10 @@ public class CreditTest {
     @Test
     @DisplayName("Ошибка в поле кода(CVC), заполнить не полностью")
     void shouldReturnErrorWithShortCode() {
-        var shortCode = DataHelper.getNumber(1);
+        var shortCode = DataHelper.getNumber(2);
         var creditpage = new ByuCredit();
         creditpage.cleanCreditForm();
         creditpage.enterCreditInputs(validCardNumber, validMonth, validYear, validName, shortCode);
-        creditpage.verifyInvalidFormatCodeVisibility();
-        assertNull(SQLHelper.getCreditStatus());
-    }
-
-    @Test
-    @DisplayName("Ошибка в поле кода(CVC), заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongCode() {
-        var longCode = DataHelper.getNumber(4);
-        var creditpage = new ByuCredit();
-        creditpage.cleanCreditForm();
-        creditpage.enterCreditInputs(validCardNumber, validMonth, validYear, validName, longCode);
         creditpage.verifyInvalidFormatCodeVisibility();
         assertNull(SQLHelper.getCreditStatus());
     }

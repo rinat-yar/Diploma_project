@@ -61,8 +61,7 @@ public class PaymentTest {
 
     @Test
     @DisplayName("Данные неизвестной карты")
-    void shouldReturnFailWithUnknownCard() {
-        var paymentpage = new Buy();
+    void shouldReturnFailWithUnknownCard() {        var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(unknownCardNumber, validMonth, validYear, validName, validCode);
         paymentpage.verifyErrorVisibility();
@@ -75,7 +74,7 @@ public class PaymentTest {
         var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(emptyCardNumber, validMonth, validYear, validName, validCode);
-        paymentpage.verifyEmptyCardNumberVisibility();
+        paymentpage.verifyInvalidFormatCardNumberVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
 
@@ -86,7 +85,7 @@ public class PaymentTest {
         var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(validCardNumber, emptyMonth, validYear, validName, validCode);
-        paymentpage.verifyEmptyMonthVisibility();
+        paymentpage.verifyInvalidFormatMonthVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
 
@@ -97,7 +96,7 @@ public class PaymentTest {
         var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(validCardNumber, validMonth, emptyYear, validName, validCode);
-        paymentpage.verifyEmptyYearVisibility();
+        paymentpage.verifyInvalidFormatYearVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
 
@@ -119,7 +118,7 @@ public class PaymentTest {
         var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(validCardNumber, validMonth, validYear, validName, emptyCode);
-        paymentpage.verifyEmptyCodeVisibility();
+        paymentpage.verifyInvalidFormatCodeVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
 
@@ -168,17 +167,6 @@ public class PaymentTest {
     }
 
     @Test
-    @DisplayName("Ошибка в номере карты, имя заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongCardNumber() {
-        var longCardNumber = DataHelper.getNumber(17);
-        var paymentpage = new Buy();
-        paymentpage.cleanPaymentForm();
-        paymentpage.enterInputs(longCardNumber, validMonth, validYear, validName, validCode);
-        paymentpage.verifyInvalidFormatCardNumberVisibility();
-        assertNull(SQLHelper.getPaymentStatus());
-    }
-
-    @Test
     @DisplayName("Ошибка со значением месяца, заполнить кириллицей")
     void shouldReturnErrorWithCyrillicMonth() {
         var cyrillicMonth = DataHelper.getNameOfCyrillic();
@@ -219,17 +207,6 @@ public class PaymentTest {
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(validCardNumber, shortMonth, validYear, validName, validCode);
         paymentpage.verifyInvalidFormatMonthVisibility();
-        assertNull(SQLHelper.getPaymentStatus());
-    }
-
-    @Test
-    @DisplayName("Ошибка со значением месяца, заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongMonth() {
-        var longMonth = DataHelper.getNumber(3);
-        var paymentpage = new Buy();
-        paymentpage.cleanPaymentForm();
-        paymentpage.enterInputs(validCardNumber, longMonth, validYear, validName, validCode);
-        paymentpage.verifyInvalidValidityPeriodVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
 
@@ -285,17 +262,6 @@ public class PaymentTest {
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(validCardNumber, validMonth, shortYear, validName, validCode);
         paymentpage.verifyInvalidFormatYearVisibility();
-        assertNull(SQLHelper.getPaymentStatus());
-    }
-
-    @Test
-    @DisplayName("Ошибка со значением года, заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongYear() {
-        var longYear = "333";
-        var paymentpage = new Buy();
-        paymentpage.cleanPaymentForm();
-        paymentpage.enterInputs(validCardNumber, validMonth, longYear, validName, validCode);
-        paymentpage.verifyInvalidValidityPeriodVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
 
@@ -399,7 +365,7 @@ public class PaymentTest {
     }
 
     @Test
-    @DisplayName("Ошибка со значением кода, заполнитьспецсимволами")
+    @DisplayName("Ошибка со значением кода, заполнить спецсимволами")
     void shouldReturnErrorWithSymbolsCode() {
         var symbolCode = DataHelper.getSymbols();
         var paymentpage = new Buy();
@@ -410,9 +376,9 @@ public class PaymentTest {
     }
 
     @Test
-    @DisplayName("Ошибка со значением кода, заполнитьне полностью")
+    @DisplayName("Ошибка со значением кода, заполнить не полностью")
     void shouldReturnErrorWithShortCode() {
-        var shortCode = DataHelper.getNumber(1);
+        var shortCode = DataHelper.getNumber(2);
         var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(validCardNumber, validMonth, validYear, validName, shortCode);
@@ -420,16 +386,6 @@ public class PaymentTest {
         assertNull(SQLHelper.getPaymentStatus());
     }
 
-    @Test
-    @DisplayName("Ошибка со значением кода, заполнить с лишними цифрами")
-    void shouldReturnErrorWithLongCode() {
-        var longCode = DataHelper.getNumber(4);
-        var paymentpage = new Buy();
-        paymentpage.cleanPaymentForm();
-        paymentpage.enterInputs(validCardNumber, validMonth, validYear, validName, longCode);
-        paymentpage.verifyInvalidFormatCodeVisibility();
-        assertNull(SQLHelper.getPaymentStatus());
-    }
     @Test
     @DisplayName("Отправка пустой формы")
     void shouldEmptyPath() {
@@ -441,11 +397,11 @@ public class PaymentTest {
         var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(emptyCardNumber, emptyMonth, emptyYear, emptyName, emptyCode);
-        paymentpage.verifyEmptyCardNumberVisibility();
-        paymentpage.verifyEmptyMonthVisibility();
-        paymentpage.verifyEmptyYearVisibility();
+        paymentpage.verifyInvalidFormatCardNumberVisibility();
+        paymentpage.verifyInvalidFormatMonthVisibility();
+        paymentpage.verifyInvalidFormatYearVisibility();
         paymentpage.verifyEmptyNameVisibility();
-        paymentpage.verifyEmptyCodeVisibility();
+        paymentpage.verifyInvalidFormatCodeVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
 }

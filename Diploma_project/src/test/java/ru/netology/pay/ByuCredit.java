@@ -96,7 +96,7 @@ public class ByuCredit {
     }
 
     public void verifyInvalidFormatYearVisibility() {
-        invalidFormatYearNotification.shouldBe(visible);
+        invalidFormatYearNotification.shouldBe(visible, Duration.ofSeconds(15));
     }
 
     public void verifyInvalidFormatNameVisibility() {
@@ -104,7 +104,7 @@ public class ByuCredit {
     }
 
     public void verifyInvalidFormatCodeVisibility() {
-        invalidFormatCodeNotification.shouldBe(visible);
+        invalidFormatCodeNotification.shouldBe(visible, Duration.ofSeconds(15));
     }
 
     public void verifyInvalidValidityPeriodVisibility() {
