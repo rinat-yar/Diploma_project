@@ -40,3 +40,9 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+Thumbs.db*
+.DS_Store*
+node_modules
+.idea
+target
+*.iml
