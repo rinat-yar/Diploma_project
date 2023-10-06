@@ -24,6 +24,7 @@ public class PaymentTest {
     static void setUpAll() {
         SelenideLogger.addListener("allure", new AllureSelenide());
     }
+
     @AfterAll
     static void tearDownAll() {
         SelenideLogger.removeListener("allure");
@@ -61,12 +62,14 @@ public class PaymentTest {
 
     @Test
     @DisplayName("Данные неизвестной карты")
-    void shouldReturnFailWithUnknownCard() {        var paymentpage = new Buy();
+    void shouldReturnFailWithUnknownCard() {
+        var paymentpage = new Buy();
         paymentpage.cleanPaymentForm();
         paymentpage.enterInputs(unknownCardNumber, validMonth, validYear, validName, validCode);
         paymentpage.verifyErrorVisibility();
         assertNull(SQLHelper.getPaymentStatus());
     }
+
     @Test
     @DisplayName("Заполнить все поля кроме номера карты")
     void shouldReturnErrorWithEmptyCardNumber() {
